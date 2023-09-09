@@ -1,7 +1,7 @@
 from __future__ import print_function
+from comtypes import CLSCTX_ALL
 try:
     from ctypes import cast, POINTER
-    from comtypes import CLSCTX_ALL
     from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
     import serial
     import math
@@ -58,7 +58,7 @@ try:
         discord_volume = discord_session._ctl.QueryInterface(ISimpleAudioVolume)
 
     # open serial port
-    ser = serial.Serial('COM4')
+    ser = serial.Serial('COM3')
     values = ser.readline().decode('utf-8').strip().split(',')
     nob1_pre, nob2_pre, nob3_pre = int(values[0]), int(values[1]), int(values[2])
 

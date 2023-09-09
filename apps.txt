@@ -1,0 +1,4 @@
+
+steam.exe,msedge.exe,Discord.exe
+msedge.exe,Discord.exe
+

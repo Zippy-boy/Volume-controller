@@ -1,3 +1,5 @@
+from contextlib import suppress
+from pycaw.magic import MagicApp
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QSlider, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QGridLayout, QLabel, QGroupBox
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume

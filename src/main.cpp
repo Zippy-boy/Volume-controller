@@ -15,7 +15,7 @@ void loop()
 
   
   Serial.print(mappedValue);
-  Serial.print(", 0, 0");      
+  Serial.print(", 0, 0, 0, 0");      
   Serial.println();
 
   delay(20);

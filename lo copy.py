@@ -1,10 +1,11 @@
-from __future__ import print_function
+import time
+from contextlib import suppress
+from pycaw.magic import MagicApp
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QSlider, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QGridLayout, QLabel, QGroupBox
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
 from ctypes import cast, POINTER, c_float
 from comtypes import CLSCTX_ALL
-import serial
 
 class MainWindow(QMainWindow):
 
@@ -26,10 +27,6 @@ class MainWindow(QMainWindow):
         slider1 = QSlider()
         slider1.valueChanged.connect(lambda value: self.update_master_volume(value))
         layout.addWidget(slider1)
-
-        ser = serial.Serial('COM3')
-        values = ser.readline().decode('utf-8').strip().split(',')
-        self.nob1_pre, self.nob2_pre, nob3_pre = int(values[0]), int(values[1]), int(values[2])
 
         new_layouts = []
         amount_sliders = 4
@@ -63,6 +60,10 @@ class MainWindow(QMainWindow):
         calibrate_button = QPushButton("Calibrate")
         calibrate_button.clicked.connect(self.calibrate_minimum_value)
         layout.addWidget(calibrate_button)
+
+    def handle_all(self, *args):
+        print("callback")
+        print(args)
 
     def show_apps(self, slider_index):
         if self.apps_window is not None:
@@ -131,7 +132,7 @@ class MainWindow(QMainWindow):
         for app in apps:
             self.change_volume(app, self.asd(value, 0, 100, 0, 1))
 
-    def change_volume(self, app, percentage):
+    def change_volume(self, magic, percentage):
         print(app, percentage)
         sessions = AudioUtilities.GetAllSessions()
         for session in sessions:

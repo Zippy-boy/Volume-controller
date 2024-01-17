@@ -6,6 +6,7 @@ from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
 from ctypes import cast, POINTER, c_float
 from comtypes import CLSCTX_ALL
 import numpy as np
+import math as math
 
 class MainWindow(QMainWindow):
 
@@ -154,9 +155,19 @@ class MainWindow(QMainWindow):
         self.lowest_volume_limit = self.find_minimum_value()
         self.save_minimum_value()
 
+
+
     def update_master_volume(self, value):
         volume_level = self.asd(int(value), 0, 100, self.lowest_volume_limit, 0)
-        print(f"Master volume: {volume_level}")
+        # a = lowest
+        # # y = volume level
+        # print(f"first log: {np.log(volume_level)}")
+        # print(f"second log: {np.log(1.07053)}")
+        # print(f"devided: {np.log(volume_level) / np.log(1.07053)}")
+        # outputVol = (np.log(volume_level) / np.log(1.07053)) - 68.2409
+        # outputVol = floor_log(volume_level, 1.07053) - 68.2409
+        print(f"Master volume raw: {volume_level}")
+        # print(f"so the volume level is: {outputVol}")
         self.master_volume.SetMasterVolumeLevel(int(volume_level), None)
 
     def save_apps(self):

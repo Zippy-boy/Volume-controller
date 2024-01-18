@@ -163,12 +163,14 @@ class MainWindow(QMainWindow):
         # # y = volume level
         # print(f"first log: {np.log(volume_level)}")
         # print(f"second log: {np.log(1.07053)}")
-        # print(f"devided: {np.log(volume_level) / np.log(1.07053)}")
+        print(f"soejf h0ipw: {(np.emath.logn(1.07346, value)) - 65.5582}")
+        mate_idk = (np.emath.logn(1.07346, value)) - 65.5582
+        mate_idk = np.clip(mate_idk, self.lowest_volume_limit, 0)
         # outputVol = (np.log(volume_level) / np.log(1.07053)) - 68.2409
         # outputVol = floor_log(volume_level, 1.07053) - 68.2409
         print(f"Master volume raw: {volume_level}")
         # print(f"so the volume level is: {outputVol}")
-        self.master_volume.SetMasterVolumeLevel(int(volume_level), None)
+        self.master_volume.SetMasterVolumeLevel(int(mate_idk), None)
 
     def save_apps(self):
         with open("apps.txt", "w") as f:

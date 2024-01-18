@@ -1,4 +1,5 @@
 {
     "DockerRun.DisableAutoGenerateConfig": true,
-    "nuxt.isNuxtApp": false
+    "nuxt.isNuxtApp": false,
+    "cmake.configureOnOpen": true
 }

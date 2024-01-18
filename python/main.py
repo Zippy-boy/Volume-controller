@@ -1,76 +1,79 @@
 from __future__ import print_function
 from comtypes import CLSCTX_ALL
-try:
-    from ctypes import cast, POINTER
-    from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
-    import serial
-    import math
-    import time
+# try:
+from ctypes import cast, POINTER
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
+import serial
+import math
+import time
+import codecs
 
 
-    def change_per(app, percentage):
-        sessions = AudioUtilities.GetAllSessions()
-        for session in sessions:
-            volume = session._ctl.QueryInterface(ISimpleAudioVolume)
-            if session.Process and session.Process.name() == app:
-                volume.SetMasterVolume(percentage, None)
-
-
-    # activate the master volume control interface
-    devices = AudioUtilities.GetSpeakers()
-    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-    master_volume = cast(interface, POINTER(IAudioEndpointVolume))
-
-    # get all audio sessions
+def change_per(app, percentage):
     sessions = AudioUtilities.GetAllSessions()
-
-
-    def asd(num, in_min, in_max, out_min, out_max):
-        return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
-
-
-    # find the Spotify session
-    spotify_session = None
     for session in sessions:
-        try:
-            if session.Process and session.Process.name() == 'Spotify.exe':
-                spotify_session = session
-                break
-        except:
-            pass
-
-    # activate the Spotify volume control interface
-    if spotify_session is not None:
-        spotify_volume = spotify_session._ctl.QueryInterface(ISimpleAudioVolume)
-
-    # find the Discord session
-    discord_session = None
-    for session in sessions:
-        try:
-            if session.Process and session.Process.name() == 'Discord.exe':
-                discord_session = session
-                break
-        except:
-            pass
-
-    # activate the Discord volume control interface
-    if discord_session is not None:
-        discord_volume = discord_session._ctl.QueryInterface(ISimpleAudioVolume)
-
-    # open serial port
-    ser = serial.Serial('COM3')
-    values = ser.readline().decode('utf-8').strip().split(',')
-    nob1_pre, nob2_pre, nob3_pre = int(values[0]), int(values[1]), int(values[2])
+        volume = session._ctl.QueryInterface(ISimpleAudioVolume)
+        if session.Process and session.Process.name() == app:
+            volume.SetMasterVolume(percentage, None)
 
 
+# activate the master volume control interface
+devices = AudioUtilities.GetSpeakers()
+interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+master_volume = cast(interface, POINTER(IAudioEndpointVolume))
 
-    # read data from serial and update volumes accordingly
-    while True:
+# get all audio sessions
+sessions = AudioUtilities.GetAllSessions()
+
+
+def asd(num, in_min, in_max, out_min, out_max):
+    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+
+# find the Spotify session
+spotify_session = None
+for session in sessions:
+    try:
+        if session.Process and session.Process.name() == 'Spotify.exe':
+            spotify_session = session
+            break
+    except:
+        pass
+
+# activate the Spotify volume control interface
+if spotify_session is not None:
+    spotify_volume = spotify_session._ctl.QueryInterface(ISimpleAudioVolume)
+
+# find the Discord session
+discord_session = None
+for session in sessions:
+    try:
+        if session.Process and session.Process.name() == 'Discord.exe':
+            discord_session = session
+            break
+    except:
+        pass
+
+# activate the Discord volume control interface
+if discord_session is not None:
+    discord_volume = discord_session._ctl.QueryInterface(ISimpleAudioVolume)
+
+# open serial port
+ser = serial.Serial('COM5')
+# values = ser.readline().decode('utf-8').strip().split(',')
+values = codecs.decode(ser.readline(), 'unicode_escape').split(',')
+nob1_pre, nob2_pre, nob3_pre, nob4_pre = int(values[0]), int(values[1]), int(values[2]), int(values[3])
+print("connected")
+
+
+# read data from serial and update volumes accordingly
+while True:
+    try:
         # read data from serial and parse values
         values = ser.readline().decode('utf-8').strip().split(',')
-        if len(values) != 3:
+        if len(values) != 4:
             continue
-        nob2, nob1, nob3 = int(values[0]), int(values[1]), int(values[2])
+        nob1, nob2, nob3 = int(values[0]), int(values[1]), int(values[2])
         if nob2 == 1: nob2 = 0
 
         # update master volume
@@ -96,9 +99,12 @@ try:
                 discord_volume_level = asd(nob3, 0, 100, 0, 1)
                 change_per("Discord.exe", discord_volume_level)
                 nob3_pre = nob3
+    except Exception as e:
+        print(e)
+        input("Press Enter to continue...")
 
-        # time.sleep(0.01)
+    # time.sleep(0.01)
 
-except Exception as e:
-    print(e)
-    input("Press Enter to continue...")
+# except Exception as e:
+#     print(e)
+#     input("Press Enter to continue...")

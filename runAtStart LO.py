@@ -77,7 +77,7 @@ interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
 master_volume = cast(interface, POINTER(IAudioEndpointVolume))
 
 
-ser = serial.Serial('COM3')
+ser = serial.Serial('COM5')
 values = ser.readline().decode('utf-8').strip().split(',')
 nob1_pre, nob2_pre, nob3_pre = int(values[0]), int(values[1]), int(values[2])
 

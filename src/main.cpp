@@ -12,6 +12,10 @@ void loop()
 {
   int sensorValue0 = analogRead(analogInPin0);
   int mappedValue = map(sensorValue0, 0, 1023, 0, 100);
+  if (mappedValue == 99)
+  {
+    mappedValue = 100;
+  }
 
   
   Serial.print(mappedValue);

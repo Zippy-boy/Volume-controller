@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(slider1)
 
         new_layouts = []
-        amount_sliders = 4
+        amount_sliders = 5
 
         for i in range(amount_sliders):
             lay = QHBoxLayout()
@@ -69,6 +69,7 @@ class MainWindow(QMainWindow):
         self.apps_window = QWidget()
         self.apps_window.setWindowTitle("Apps")
         layout = QGridLayout()
+        self.apps_window.setGeometry(100, 100, 500, 500)
 
         vol_label = QLabel("Vol")
         sel_label = QLabel("Selected")

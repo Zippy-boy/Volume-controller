@@ -69,12 +69,17 @@ class MainWindow(QMainWindow):
         self.apps_window = QWidget()
         self.apps_window.setWindowTitle("Apps")
         layout = QGridLayout()
+        layoutNS = QHBoxLayout()
+        layoutSS = QHBoxLayout()
         self.apps_window.setGeometry(100, 100, 500, 500)
 
-        vol_label = QLabel("Vol")
+        vol_label = QLabel("Unselected")
         sel_label = QLabel("Selected")
         layout.addWidget(vol_label, 0, 0)
         layout.addWidget(sel_label, 0, 1)
+        layoutNS.addWidget(layoutNS, 1, 0)
+        layoutSS.addWidget(layoutSS, 1, 1)
+
 
         vol_apps = self.find_open_apps()
         sel_apps = self.slider_apps[slider_index]
@@ -82,12 +87,12 @@ class MainWindow(QMainWindow):
         for i, app in enumerate(vol_apps):
             app_label = QLabel(app)
             app_label.mousePressEvent = lambda event, i=i: self.select_app(i, slider_index)
-            layout.addWidget(app_label, i+1, 0)
+            layoutNS.addWidget(app_label)
 
         for i, app in enumerate(sel_apps):
             app_label = QLabel(app)
             app_label.mousePressEvent = lambda event, i=i: self.select_app(i, slider_index)
-            layout.addWidget(app_label, i+1, 1)
+            layoutSS.addWidget(app_label)
 
         done_button = QPushButton("Done")
         done_button.clicked.connect(lambda checked, slider_index=slider_index: self.link_apps(slider_index))

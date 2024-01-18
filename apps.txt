@@ -1,4 +1,4 @@
-Spotify.exe
-Spotify.exe
-Spotify.exe,Done
-Spotify.exe
+msedge.exe,Spotify.exe
+RtkAudUService64.exe
+
+

@@ -1,12 +1,13 @@
 from contextlib import suppress
 from pycaw.magic import MagicApp
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QSlider, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QGridLayout, QLabel, QGroupBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QSlider, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QGridLayout, QLabel, QGroupBox, QFileDialog
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
 from ctypes import cast, POINTER, c_float
 from comtypes import CLSCTX_ALL
 import numpy as np
 import math as math
+import os
 
 class MainWindow(QMainWindow):
 
@@ -39,9 +40,12 @@ class MainWindow(QMainWindow):
             slider = QSlider()
             slider.valueChanged.connect(lambda value, i=i: self.change_slider(i, value))
             button = QPushButton("Apps")
+            button2 = QPushButton("All exe's in folder")
             button.clicked.connect(lambda checked, i=i: self.show_apps(i))
+            button2.clicked.connect(lambda checked, i=i: self.allEXE(i))
             lay.addWidget(slider)
             lay.addWidget(button)
+            lay.addWidget(button2)
             group_box.setLayout(lay)
             new_layouts.append(group_box)
 
@@ -61,6 +65,15 @@ class MainWindow(QMainWindow):
         calibrate_button = QPushButton("Calibrate")
         calibrate_button.clicked.connect(self.calibrate_minimum_value)
         layout.addWidget(calibrate_button)
+    
+    def allEXE(self, slider_index):
+        # open a folder selection dialog
+        folder = QFileDialog.getExistingDirectory(self, "Select Folder")
+        for root, dirs, files in os.walk(folder):
+            for file in files:
+                if file.endswith(".exe"):
+                    self.slider_apps[slider_index].append(os.path.join(root, file))
+                    self.selected_apps.append(os.path.join(root, file))
 
     def show_apps(self, slider_index):
         if self.apps_window is not None:
@@ -69,34 +82,54 @@ class MainWindow(QMainWindow):
         self.apps_window = QWidget()
         self.apps_window.setWindowTitle("Apps")
         layout = QGridLayout()
-        layoutNS = QHBoxLayout()
-        layoutSS = QHBoxLayout()
         self.apps_window.setGeometry(100, 100, 500, 500)
 
         vol_label = QLabel("Unselected")
         sel_label = QLabel("Selected")
-        layout.addWidget(vol_label, 0, 0)
-        layout.addWidget(sel_label, 0, 1)
-        layoutNS.addWidget(layoutNS, 1, 0)
-        layoutSS.addWidget(layoutSS, 1, 1)
-
+        vol_group_box = QGroupBox()
+        sel_group_box = QGroupBox()
+        vol_group_box.setTitle("Unselected")
+        sel_group_box.setTitle("Selected")
+        vol_layout = QVBoxLayout()
+        sel_layout = QVBoxLayout()
+        vol_group_box.setLayout(vol_layout)
+        sel_group_box.setLayout(sel_layout)
 
         vol_apps = self.find_open_apps()
         sel_apps = self.slider_apps[slider_index]
 
+        def remove_selected_app(app_index):
+            app = sel_apps[app_index]
+            sel_apps.remove(app)
+            self.selected_apps.remove(app)
+            self.apps_window.close()
+            self.show_apps(slider_index)
+
         for i, app in enumerate(vol_apps):
+            if app in sel_apps:
+                continue
             app_label = QLabel(app)
+            app_label.setStyleSheet("QLabel { border: 1px solid gray; padding: 5px; }")
             app_label.mousePressEvent = lambda event, i=i: self.select_app(i, slider_index)
-            layoutNS.addWidget(app_label)
+            vol_layout.addWidget(app_label)
 
         for i, app in enumerate(sel_apps):
             app_label = QLabel(app)
-            app_label.mousePressEvent = lambda event, i=i: self.select_app(i, slider_index)
-            layoutSS.addWidget(app_label)
+            app_label.setStyleSheet("QLabel { border: 1px solid gray; padding: 5px; }")
+            app_label.mousePressEvent = lambda event, i=i: remove_selected_app(i)
+            sel_layout.addWidget(app_label)
+
+        # done_button = QPushButton("Done")
+        # done_button.clicked.connect(lambda checked, slider_index=slider_index: self.link_apps(slider_index))
+
+        layout.addWidget(vol_group_box, 0, 0)
+        layout.addWidget(sel_group_box, 0, 1)
 
         done_button = QPushButton("Done")
         done_button.clicked.connect(lambda checked, slider_index=slider_index: self.link_apps(slider_index))
-        layout.addWidget(done_button, len(vol_apps)+1, 0, 1, 2)
+
+        # Add an extra row for the done button
+        layout.addWidget(done_button, layout.rowCount(), 0, 1, 2)
 
         self.apps_window.setLayout(layout)
         self.apps_window.show()
@@ -110,18 +143,22 @@ class MainWindow(QMainWindow):
         return apps
 
     def select_app(self, app_index, slider_index):
-        app = self.apps_window.layout().itemAtPosition(app_index+1, 0).widget().text()
+        app = self.find_open_apps()[app_index]
         if app in self.slider_apps[slider_index]:
             self.slider_apps[slider_index].remove(app)
-            self.apps_window.layout().itemAtPosition(self.selected_apps.index(app)+1, 1).widget().deleteLater()
+            self.apps_window.layout().itemAtPosition(self.selected_apps.index(app), 1).widget().deleteLater()
             self.selected_apps.remove(app)
         else:
             self.slider_apps[slider_index].append(app)
             app_label = QLabel(app)
             app_label.mousePressEvent = lambda event, i=len(self.selected_apps): self.select_app(i, slider_index)
-            self.apps_window.layout().addWidget(app_label, len(self.selected_apps)+1, 1)
+            self.apps_window.layout().addWidget(app_label, len(self.selected_apps), 1)
             self.selected_apps.append(app)
-
+        
+        # Close the current apps window and show it again to refresh the list
+        self.apps_window.close()
+        self.show_apps(slider_index)
+       
     def link_apps(self, slider_index):
         print(f"Slider {slider_index}: {', '.join(self.slider_apps[slider_index])}")
         self.apps_window.close()

@@ -194,26 +194,24 @@ class MainWindow(QMainWindow):
         print(f"Minimum value: {volume_level}")
         return volume_level
 
-    def calibrate_minimum_value(self):
+    def calibrate_minimum_value(self): # Finds the lowest volume level that the master volume can be set to
         self.lowest_volume_limit = self.find_minimum_value()
         self.save_minimum_value()
 
 
-    # __________________ DONT TOUCH __________________
     def update_master_volume(self, value):
-        volume_level = self.asd(int(value), 0, 100, self.lowest_volume_limit, 0)
+        volume_level = self.asd(int(value), 0, 100, self.lowest_volume_limit, 0) # Converts the slider value to a volume level
 
-        print(f"soejf h0ipw: {(np.emath.logn(1.07346, value)) - 65.5582}")
-        mate_idk = (np.emath.logn(1.07346, value)) - 65.5582
-        mate_idk = np.clip(mate_idk, self.lowest_volume_limit, 0)
+        print(f"Maths: {(np.emath.logn(1.07346, value)) - 65.5582}")
+        maths_done = (np.emath.logn(1.07346, value)) - 65.5582 # Does a log function to decode the SetMasterVolumeLevel function
+        maths_done = np.clip(maths_done, self.lowest_volume_limit, 0) # Clips the volume level to the lowest volume level so the volume can't go below that
 
         print(f"Master volume raw: {volume_level}")
 
-        self.master_volume.SetMasterVolumeLevel(int(mate_idk), None)
-    
-    # __________________ CAN STILL TOUCH __________________
+        self.master_volume.SetMasterVolumeLevel(int(maths_done), None) # Sets the master volume to the volume level
 
-    def save_apps(self):
+
+    def save_apps(self): # saves the apps to a txt file for future use
         with open("apps.txt", "w") as f:
             for apps in self.slider_apps:
                 f.write(",".join(apps) + "\n")

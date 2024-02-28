@@ -1,4 +1,4 @@
-msedge.exe,Spotify.exe
-RtkAudUService64.exe
+steam.exe,msedge.exe,RtkAudUService64.exe
+
 
 

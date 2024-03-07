@@ -1,9 +1,7 @@
-from contextlib import suppress
-from pycaw.magic import MagicApp
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QSlider, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QGridLayout, QLabel, QGroupBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QSlider, QPushButton, QHBoxLayout, QGridLayout, QLabel, QGroupBox
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
-from ctypes import cast, POINTER, c_float
+from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 import numpy as np
 import math as math

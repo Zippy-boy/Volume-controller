@@ -47,12 +47,31 @@
             <div class="appBox"></div>
         </div>
     </div>
-    <div class="appDraw">
-        {% for i in range(1, 10) %}
-            <span>hello</span>
+    <div class="appDraw ">
+        {% for i in range(1, hello) %}
+            <span>{{a}}</span>
         {% endfor %}
+        <form action="/submit" method="post">
+            <input type="text" name="asd" id="asd">
+            <input type="submit" value="Submit">
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('form').on('submit', function (event) {
+                event.preventDefault();  // Prevent the form from being submitted normally
+                $.ajax({
+                    url: '/submit',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            });
+        });
+</script>
 </body>
 
 </html>

@@ -1,48 +1,67 @@
-html {
-    background-color: #2d2d2d;
-}
-
-.container {
+body {
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    flex-direction: row;
     height: 100vh;
-    background-color: #2d2d2d;
 }
 
-/* .slider {
+.sliderDraw {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 20px;
-    writing-mode: bt-lr;
-    border: 2px solid #3e4046;
-    padding: 10px;
-    border-radius: 5px;
-    -webkit-appearance: slider-vertical;
-    appearance: slider-vertical;
-    height: 200px;
-    background-color: #202125;
-} */
-
-.sliders {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 20px;
-    margin-right: 20px;
+    flex-direction: column;     
+    width: 50%;
+    height: 100%;
+    border: 10px solid #f40000;
 }
 
-.empty-div {
+.appDraw {
+    display: flex;
+    
+    width: 50%;
+    height: 100%;
+    border: 10px solid #f40000;
+}
+
+.sliderContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 10px;
+    align-items: center;
     width: 100%;
     height: 100%;
-    margin-right: 20px;
-    border: 1px solid black;
-
+    /* border: 5px dotted #000; */
+    background: #272639;
+    border-radius: 1rem;
+    padding: 1.2rem;
+    overflow: auto;
+    box-shadow: inset 0 0 10px #000;
 }
 
-.line {
-    width: 2px;
-    height: 80vh;
-    background-color: black;
-    margin-right: 20px;
+.slider {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 20%;
+    height: 100%;
+    /* border: 5px dotted #5a9291; */
+    margin-top: 20vh;
+    background-color: #c7c7c7;
+    box-shadow: inset 0 0 10px #000000;
+}
+
+.sliderCon {
+    width: 15vh;
+    height: 10%;
+    /* border: 5px solid #5a9291; */
+    /* margin: 0; */
+}
+
+.appBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 80%;
+    /* border: 5px dotted #5a9291; */
 }

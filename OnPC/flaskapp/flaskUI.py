@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flaskwebgui import FlaskUI
 
 app = Flask(__name__)
@@ -16,7 +16,7 @@ def submit():
     global input_data
     input_data = request.form['asd']
     print(input_data)
-    return input_data
+    return redirect(url_for('index_page'))
 
 if __name__ == '__main__':
     FlaskUI(app=app, server="flask").run()

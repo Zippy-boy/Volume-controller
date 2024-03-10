@@ -1,1 +1,1 @@
-[{'slider': 1, 'apps': ['Discord.exe']}, {'slider': 2, 'apps': ['iCUE.exe']}, {'slider': 3, 'apps': []}, {'slider': 4, 'apps': []}]
+[{"slider": 1, "apps": ["Discord.exe"]}, {"slider": 2, "apps": []}, {"slider": 3, "apps": []}, {"slider": 4, "apps": []}]

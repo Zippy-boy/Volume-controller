@@ -150,7 +150,12 @@
             // Collect inner HTML of each appBox
             var appBoxes = document.getElementsByClassName('appBox');
             var appBoxContents = Array.from(appBoxes).map((box, index) => {
-                var apps = Array.from(box.getElementsByClassName('app')).map(app => app.textContent.trim().replace(/'/g, '"'));
+                var apps = Array.from(box.getElementsByClassName('app')).map(app => app.innerHTML);
+                console.log({
+                    slider: index + 1, // Slider number (1-4)
+                    apps: apps
+                
+                })
                 return {
                     slider: index + 1, // Slider number (1-4)
                     apps: apps

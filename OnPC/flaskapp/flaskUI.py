@@ -6,6 +6,7 @@ from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 import json
 import numpy as np
+import os
 
 app = Flask(__name__)
 
@@ -13,6 +14,16 @@ app = Flask(__name__)
 devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
 master_volume = cast(interface, POINTER(IAudioEndpointVolume))
+
+# Check if sliders.json exists, if not, create it
+if not os.path.exists('sliders.json'):
+    with open('sliders.json', 'w') as file:
+        json.dump([], file)
+
+# Check if minimum_value.txt exists, if not, create it
+if not os.path.exists('minimum_value.txt'):
+    with open('minimum_value.txt', 'w') as file:
+        file.write('0')
 
 
 def change_volume(app, percentage):
@@ -121,4 +132,4 @@ def calibrate():
     return redirect(url_for('index_page'))
 
 if __name__ == '__main__':
-    FlaskUI(app=app, server="flask").run()
+    FlaskUI(app=app, server="flask", port=4759).run()

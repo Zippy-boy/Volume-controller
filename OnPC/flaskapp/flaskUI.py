@@ -8,6 +8,7 @@ import json
 import numpy as np
 import os
 
+
 app = Flask(__name__)
 
 
@@ -27,7 +28,7 @@ if not os.path.exists('minimum_value.txt'):
 
 
 def change_volume(app, percentage):
-    print(app, percentage)
+    # print(app, percentage)
     sessions = AudioUtilities.GetAllSessions()
     for session in sessions:
         volume = session._ctl.QueryInterface(ISimpleAudioVolume)
@@ -54,7 +55,7 @@ def index_page():
     with open("sliders.json", "r") as file:
         preLoadedApps = json.load(file)
 
-        print(preLoadedApps)
+        # print(preLoadedApps)
     return render_template('index.html', apps=apps, preLoadedApps=preLoadedApps)  # Pass 'a' as a parameter
 
 @app.route('/submit', methods=['POST'])
@@ -90,7 +91,7 @@ def change_volume_route():
     with open("sliders.json", "r") as file:
         file = json.load(file)
         for app in file[int(slider_index)-1]["apps"]:
-            print(app, percentage)
+            # print(app, percentage)
             change_volume(app, percentage)
         return redirect(url_for('index_page'))
 
@@ -101,13 +102,13 @@ def change_master_volume():
 
     volume_level = request.get_json()['volume']
     volume_level = asd(int(volume_level), 0, 100, lowest_volume_limit, 0)
-    print(volume_level)
+    # print(volume_level)
 
-    print(f"soejf h0ipw: {(np.emath.logn(1.07346, volume_level)) - 51.5582}")
+    # print(f"soejf h0ipw: {(np.emath.logn(1.07346, volume_level)) - 51.5582}")
     mate_idk = (np.emath.logn(1.07346, volume_level)) - 51.5582
     mate_idk = np.clip(mate_idk, lowest_volume_limit, 0)
 
-    print(f"Master volume raw: {mate_idk}")
+    # print(f"Master volume raw: {mate_idk}")
 
     master_volume.SetMasterVolumeLevel(int(mate_idk), None)
     return redirect(url_for('index_page'))
@@ -124,7 +125,7 @@ def calibrate():
                 break
         except Exception as e:
             break
-    print(f"Minimum value: {volume_level}")
+    # print(f"Minimum value: {volume_level}")
     
     with open("minimum_value.txt", "w") as f:
         f.write(str(volume_level))
@@ -132,4 +133,4 @@ def calibrate():
     return redirect(url_for('index_page'))
 
 if __name__ == '__main__':
-    FlaskUI(app=app, server="flask", port=4759).run()
+    FlaskUI(app=app, server="flask").run()

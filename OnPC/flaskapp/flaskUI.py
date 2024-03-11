@@ -7,8 +7,8 @@ from comtypes import CLSCTX_ALL
 import json
 
 app = Flask(__name__)
-with open("sliders.txt", "r") as file:
-    datas = file.read()
+with open("sliders.json", "r") as file:
+    preLoadedApps = json.load(file)
 
 
 devices = AudioUtilities.GetSpeakers()
@@ -25,7 +25,7 @@ def change_volume(app, percentage):
             volume.SetMasterVolume(percentage, None)
 
 def find_open_apps():
-    pythoncom.CoInitialize()  # Initialize the COM library
+    pythoncom.CoInitialize()
     apps = []
     sessions = AudioUtilities.GetAllSessions()
     for session in sessions:
@@ -35,19 +35,15 @@ def find_open_apps():
 
 @app.route('/')
 def index_page():
-    pythoncom.CoInitialize()  # Initialize the COM library
+    pythoncom.CoInitialize()
     apps = find_open_apps()
-    with open("sliders.txt", "r") as file:
+    with open("sliders.json", "r") as file:
         input_data = file.read()
         input_data = input_data.split("},")
         for da in input_data:
             # print(da)
             pass
-        slider1Apps = input_data[0]
-        # print(slider1Apps)
-        slider2Apps = []
-        slider3Apps = []
-        slider4Apps = []
+
     return render_template('index.html', apps=apps)  # Pass 'a' as a parameter
 
 @app.route('/submit', methods=['POST'])
@@ -61,16 +57,16 @@ def submit():
         newApps = []
         # print(slider, apps)
         for app in apps:
-            newApps.append(app.replace("\n", "").replace(" ", ""))
+            newApps.append(app.replace("\n", "").replace(" ", "").strip())
         # print(newApps)
         newSliderDict.append({
             "slider": slider,
             "apps": newApps
         })
     
-    print(json.dumps(newSliderDict))
-    with open("sliders.txt", "w") as file:
-        file.write(str(json.dumps(newSliderDict)))
+    # print(json.dumps(newSliderDict))
+    with open("sliders.json", "w") as file:
+        file.write(str(json.dumps(newSliderDict)).replace("\"", '"'))
     return redirect(url_for('index_page'))
 
 @app.route('/change_volume', methods=['POST'])
@@ -78,15 +74,11 @@ def change_volume_route():
     input_data = request.get_json()
     slider_index = input_data['slider']
     percentage = input_data['volume']
-    with open("sliders.txt", "r") as file:
-        file = file.readline().replace("]", "").replace("[", "").split("},")
-        print(file[0])
-        
-        for app in file[0]["slider": slider_index]["apps"]:
-
+    with open("sliders.json", "r") as file:
+        file = json.load(file)
+        for app in file[int(slider_index)-1]["apps"]:
             print(app, percentage)
-            # change_volume(app, percentage)
-        # print(apps)
+            change_volume(app, percentage)
         return redirect(url_for('index_page'))
 
 if __name__ == '__main__':

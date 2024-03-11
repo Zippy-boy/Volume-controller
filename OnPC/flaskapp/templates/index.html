@@ -94,13 +94,13 @@
             {% endif %}
         {% endfor %}
     </div>
-    <div>
-        <div class="mainSlider">
-            <div class="mainSlider">
-                <input id="default-range" type="range" value="0"
-                    class="mainSliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90" >
-            </div>
+    <div class="mainSlider">
+        <div class="slider mainslidy">
+            <input id="default-range" type="range" value="0"
+                class="mainSliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90" 
+                oninput="changeMasterVolume(this.value)">
         </div>
+        <button class="app hello" onclick="calibrate()">CALIBRATE</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -110,6 +110,37 @@
         
         function asd(num, in_min, in_max, out_min, out_max) {
             return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        }
+
+        function changeMasterVolume(volume) {
+            volume = asd(volume, 100, 0, 0, 100);
+            console.log(volume);
+            $.ajax({
+                url: '/change_master_volume',
+                type: 'POST',
+                data: JSON.stringify({'volume': volume}),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (response) {
+                    // console.log(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function calibrate() {
+            $.ajax({
+                url: '/calibrate',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
         }
 
         function changeVolume(volume, slider) {

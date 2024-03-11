@@ -3,6 +3,8 @@ body {
     flex-direction: row;
     height: 100vh;
     background-color: #8f91e5;
+    margin: 0;
+    overflow: hidden;
 }
 
 .sliderDraw {
@@ -40,7 +42,7 @@ body {
 .appDraw {
     display: flexbox;
     width: 50%;
-    height: 97%;
+    height: 98%;
     /* border: 10px solid #f40000; */
     background: #272637;
     border-radius: 1rem;
@@ -105,15 +107,27 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    height: 40%;
-    /* border: 5px dotted #5a9291; */
-    margin-top: 15vh;
+    width: 6%;
+    height: 100%;
+    border: 5px dotted #5a9291;
+    margin-top: 30vh;
     /* background-color: #c7c7c7; */
     /* box-shadow: inset 0 0 10px #000000; */
+
 }
 
 .mainSliderCon {
-    transform: scaleY(3);
-    transform: rotate(90deg);
+    width: 90vh;
+    height: 2.3%;
+
+    /* border: 5px solid #5a9291; */
+    /* margin: 0; */
+}
+
+.hello {
+    position: relative;
+    top: -33vh;
+    /* Adjust this value as needed */
+    z-index: 1;
+    /* This will make the span appear on top of other elements */
 }

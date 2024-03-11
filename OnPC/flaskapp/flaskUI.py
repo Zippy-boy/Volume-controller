@@ -5,6 +5,7 @@ from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 import json
+import numpy as np
 
 app = Flask(__name__)
 
@@ -30,6 +31,9 @@ def find_open_apps():
         if session.Process and session.Process.name() not in apps:
             apps.append(session.Process.name())
     return apps
+
+def asd(num, in_min, in_max, out_min, out_max):
+    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 @app.route('/')
 def index_page():
@@ -78,6 +82,43 @@ def change_volume_route():
             print(app, percentage)
             change_volume(app, percentage)
         return redirect(url_for('index_page'))
+
+@app.route('/change_master_volume', methods=['POST'])
+def change_master_volume():
+    with open("minimum_value.txt", "r") as f:
+        lowest_volume_limit = float(f.read())
+
+    volume_level = request.get_json()['volume']
+    volume_level = asd(int(volume_level), 0, 100, lowest_volume_limit, 0)
+    print(volume_level)
+
+    print(f"soejf h0ipw: {(np.emath.logn(1.07346, volume_level)) - 51.5582}")
+    mate_idk = (np.emath.logn(1.07346, volume_level)) - 51.5582
+    mate_idk = np.clip(mate_idk, lowest_volume_limit, 0)
+
+    print(f"Master volume raw: {mate_idk}")
+
+    master_volume.SetMasterVolumeLevel(int(mate_idk), None)
+    return redirect(url_for('index_page'))
+
+@app.route('/calibrate', methods=['POST'])
+def calibrate():
+    volume_level = 0
+    while True:
+        try:
+            hr = master_volume.SetMasterVolumeLevel(volume_level, None)
+            if hr == 0:
+                volume_level -= 0.01
+            else:
+                break
+        except Exception as e:
+            break
+    print(f"Minimum value: {volume_level}")
+    
+    with open("minimum_value.txt", "w") as f:
+        f.write(str(volume_level))
+
+    return redirect(url_for('index_page'))
 
 if __name__ == '__main__':
     FlaskUI(app=app, server="flask").run()

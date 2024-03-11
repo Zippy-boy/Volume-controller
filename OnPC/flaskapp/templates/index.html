@@ -20,7 +20,15 @@
                 class="1 sliderCon h-half bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90"
                 oninput="changeVolume(this.value, this.className)">
             </div>
-            <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)">
+                {% if preLoadedApps %}
+                    {% for app in preLoadedApps[0]["apps"] %}
+                        <div class="app" draggable="true" ondragstart="drag(event)">
+                            {{app}}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
         <div class="sliderContainer">
             <div class="slider">
@@ -30,7 +38,15 @@
                     class="2 sliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90"
                     oninput="changeVolume(this.value, this.className)">
             </div>
-            <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)">
+                {% if preLoadedApps %}
+                    {% for app in preLoadedApps[1]["apps"] %}
+                        <div class="app" draggable="true" ondragstart="drag(event)">
+                            {{app}}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
         <div class="sliderContainer">
             <div class="slider">
@@ -40,7 +56,15 @@
                     class="3 sliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90"
                     oninput="changeVolume(this.value, this.className)">
             </div>
-            <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)">
+                {% if preLoadedApps %}
+                    {% for app in preLoadedApps[2]["apps"] %}
+                        <div class="app" draggable="true" ondragstart="drag(event)">
+                            {{app}}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
         <div class="sliderContainer">
             <div class="slider">
@@ -50,27 +74,39 @@
                     class="4 sliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90"
                     oninput="changeVolume(this.value, this.className)">
             </div>
-            <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)">
+                {% if preLoadedApps %}
+                    {% for app in preLoadedApps[3]["apps"] %}
+                        <div class="app" draggable="true" ondragstart="drag(event)">
+                            {{app}}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
     </div>
     <div class="appDraw">
         {% for app in apps %}
-            <div class="app" draggable="true" ondragstart="drag(event)">
-                {{app}}
-            </div>
+            {% if app not in preLoadedApps[0]["apps"] and app not in preLoadedApps[1]["apps"] and app not in preLoadedApps[2]["apps"] and app not in preLoadedApps[3]["apps"] %}
+                <div class="app" draggable="true" ondragstart="drag(event)">
+                    {{app}}
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
     <div>
         <div class="mainSlider">
             <div class="mainSlider">
                 <input id="default-range" type="range" value="0"
-                    class="sliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90" >
+                    class="mainSliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90" >
             </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+
+        // console.log("{{preLoadedApps[3]}}")
         
         function asd(num, in_min, in_max, out_min, out_max) {
             return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;

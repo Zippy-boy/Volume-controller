@@ -112,3 +112,8 @@ body {
     /* background-color: #c7c7c7; */
     /* box-shadow: inset 0 0 10px #000000; */
 }
+
+.mainSliderCon {
+    transform: scaleY(3);
+    transform: rotate(90deg);
+}

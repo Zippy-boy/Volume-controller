@@ -7,8 +7,6 @@ from comtypes import CLSCTX_ALL
 import json
 
 app = Flask(__name__)
-with open("sliders.json", "r") as file:
-    preLoadedApps = json.load(file)
 
 
 devices = AudioUtilities.GetSpeakers()
@@ -37,14 +35,12 @@ def find_open_apps():
 def index_page():
     pythoncom.CoInitialize()
     apps = find_open_apps()
-    with open("sliders.json", "r") as file:
-        input_data = file.read()
-        input_data = input_data.split("},")
-        for da in input_data:
-            # print(da)
-            pass
 
-    return render_template('index.html', apps=apps)  # Pass 'a' as a parameter
+    with open("sliders.json", "r") as file:
+        preLoadedApps = json.load(file)
+
+        print(preLoadedApps)
+    return render_template('index.html', apps=apps, preLoadedApps=preLoadedApps)  # Pass 'a' as a parameter
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -63,9 +59,11 @@ def submit():
             "slider": slider,
             "apps": newApps
         })
-    
+
     # print(json.dumps(newSliderDict))
     with open("sliders.json", "w") as file:
+        # print("__________________________")
+        # print(json.dumps(newSliderDict))
         file.write(str(json.dumps(newSliderDict)).replace("\"", '"'))
     return redirect(url_for('index_page'))
 

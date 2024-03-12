@@ -19,7 +19,8 @@ master_volume = cast(interface, POINTER(IAudioEndpointVolume))
 # Check if sliders.json exists, if not, create it
 if not os.path.exists('sliders.json'):
     with open('sliders.json', 'w') as file:
-        json.dump([], file)
+        base = '[{"slider": 1, "apps": []}, {"slider": 2, "apps": []}, {"slider": 3, "apps": []}, {"slider": 4, "apps": []}]'
+        json.dump(base, file)
 
 # Check if minimum_value.txt exists, if not, create it
 if not os.path.exists('minimum_value.txt'):
@@ -105,7 +106,7 @@ def change_master_volume():
     # print(volume_level)
 
     # print(f"soejf h0ipw: {(np.emath.logn(1.07346, volume_level)) - 51.5582}")
-    mate_idk = (np.emath.logn(1.07346, volume_level)) - 51.5582
+    mate_idk = (np.emath.logn(1.07346, volume_level)) - 66.5582
     mate_idk = np.clip(mate_idk, lowest_volume_limit, 0)
 
     # print(f"Master volume raw: {mate_idk}")

@@ -105,8 +105,8 @@ def change_master_volume():
     volume_level = asd(int(volume_level), 0, 100, lowest_volume_limit, 0)
     # print(volume_level)
 
-    # print(f"soejf h0ipw: {(np.emath.logn(1.07346, volume_level)) - 51.5582}")
-    mate_idk = (np.emath.logn(1.07346, volume_level)) - 66.5582
+    print(f"soejf h0ipw: {(np.emath.logn(1.07346, volume_level)) - 65.5582}")
+    mate_idk = (np.emath.logn(1.07346, volume_level)) - 65.5582
     mate_idk = np.clip(mate_idk, lowest_volume_limit, 0)
 
     # print(f"Master volume raw: {mate_idk}")

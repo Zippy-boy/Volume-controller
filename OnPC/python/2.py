@@ -15,6 +15,7 @@ try:
 
     # open serial port
     ser = serial.Serial('COM4')
+    print(ser.readline().decode('utf-8').strip())
     nob1_pre = int(ser.readline().decode('utf-8').strip().split(',')[0])
 
     while True:

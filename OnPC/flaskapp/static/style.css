@@ -127,6 +127,7 @@ body {
 .hello {
     position: relative;
     top: -33vh;
+    width: 80%;
     /* Adjust this value as needed */
     z-index: 1;
     /* This will make the span appear on top of other elements */

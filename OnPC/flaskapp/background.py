@@ -75,7 +75,7 @@ try:
 
     event = Event()
 
-    image = Image.open("C:/Users/Zippy/Documents/GitHub/Volume-controller/OnPC/flaskapp/static/icon.png")
+    image = Image.open("OnPC/flaskapp/static/icon.png")
 
     icon = pystray.Icon(name='Volume Controller', icon=image, title='Volume controller')
 

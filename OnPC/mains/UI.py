@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         self.master_volume = cast(interface, POINTER(IAudioEndpointVolume))
 
-        self.setWindowTitle("My App")
+        self.setWindowTitle("Volume Controller")
 
         layout = QHBoxLayout()
 

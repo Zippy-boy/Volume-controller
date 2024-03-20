@@ -36,7 +36,7 @@ def change_volume(app, percentage):
         if session.Process and session.Process.name() == app:
             volume.SetMasterVolume(percentage, None)
 
-def find_open_apps():
+def find_open_apps(): # finds all open apps that are using audio
     pythoncom.CoInitialize()
     apps = []
     sessions = AudioUtilities.GetAllSessions()
@@ -57,10 +57,11 @@ def index_page():
         preLoadedApps = json.load(file)
 
         # print(preLoadedApps)
-    return render_template('index.html', apps=apps, preLoadedApps=preLoadedApps)  # Pass 'a' as a parameter
+    return render_template('index.html', apps=apps, preLoadedApps=preLoadedApps)  # Loads the index.html file
 
-@app.route('/submit', methods=['POST'])
+@app.route('/submit', methods=['POST']) 
 def submit():
+ # Lets the front end send what apps are linked to what slider, called at every drag and drop   
     input_data = request.get_json()
     newSliderDict = []
     # print(input_data[0])
@@ -77,15 +78,14 @@ def submit():
             "apps": newApps
         })
 
-    # print(json.dumps(newSliderDict))
     with open("sliders.json", "w") as file:
-        # print("__________________________")
-        # print(json.dumps(newSliderDict))
+        # Saves the apps and their sliders to sliders.json
         file.write(str(json.dumps(newSliderDict)).replace("\"", '"'))
     return redirect(url_for('index_page'))
 
 @app.route('/change_volume', methods=['POST'])
 def change_volume_route():
+    # This lists thorugh all apps in the slider and changes their volume
     input_data = request.get_json()
     slider_index = input_data['slider']
     percentage = input_data['volume']
@@ -98,24 +98,24 @@ def change_volume_route():
 
 @app.route('/change_master_volume', methods=['POST'])
 def change_master_volume():
+    # This changes the master volume of the PC
     with open("minimum_value.txt", "r") as f:
         lowest_volume_limit = float(f.read())
 
     volume_level = request.get_json()['volume']
     volume_level = asd(int(volume_level), 0, 100, lowest_volume_limit, 0)
-    # print(volume_level)
 
     print(f"soejf h0ipw: {(np.emath.logn(1.07346, volume_level)) - 65.5582}")
-    mate_idk = (np.emath.logn(1.07346, volume_level)) - 65.5582
-    mate_idk = np.clip(mate_idk, lowest_volume_limit, 0)
+    mappedValue = (np.emath.logn(1.07346, volume_level)) - 65.5582
+    mappedValue = np.clip(mappedValue, lowest_volume_limit, 0)
 
-    # print(f"Master volume raw: {mate_idk}")
-
-    master_volume.SetMasterVolumeLevel(int(mate_idk), None)
+    master_volume.SetMasterVolumeLevel(int(mappedValue), None)
     return redirect(url_for('index_page'))
 
 @app.route('/calibrate', methods=['POST'])
 def calibrate():
+    # This slowly lowers the volume to find where the code errors
+    # which demonstrates the lowest volume the PC can go
     volume_level = 0
     while True:
         try:
@@ -126,7 +126,6 @@ def calibrate():
                 break
         except Exception as e:
             break
-    # print(f"Minimum value: {volume_level}")
     
     with open("minimum_value.txt", "w") as f:
         f.write(str(volume_level))
@@ -134,4 +133,6 @@ def calibrate():
     return redirect(url_for('index_page'))
 
 if __name__ == '__main__':
+    # Runs the app in FlaskUI which just opens up a 
+    # web browser and runs the app
     FlaskUI(app=app, server="flask").run()

@@ -20,15 +20,12 @@ try:
             lowest_volume_limit = float(f.read())
 
         volume_level = asd(int(volume_level), 100, 0, lowest_volume_limit, 0)
-        # print(volume_level)
 
         print(f"soejf h0ipw: {(np.emath.logn(1.07346, volume_level)) - 58.5582}")
-        mate_idk = (np.emath.logn(1.07346, volume_level)) - 58.5582
-        mate_idk = np.clip(mate_idk, lowest_volume_limit, 0)
+        mappedValue = (np.emath.logn(1.07346, volume_level)) - 58.5582
+        mappedValue = np.clip(mappedValue, lowest_volume_limit, 0)
 
-        # print(f"Master volume raw: {mate_idk}")
-
-        master_volume.SetMasterVolumeLevel(int(mate_idk), None)
+        master_volume.SetMasterVolumeLevel(int(mappedValue), None)
 
     def change_volume(app, percentage):
         percentage = asd(int(percentage), 0, 100, 0, 1)
@@ -40,18 +37,22 @@ try:
                 volume.SetMasterVolume(percentage, None)
 
     def getAudionoPort():
+        ''' This list thorugh all of the COM ports on the pc
+        and trys to find one with the description "USB Serial Port"
+        which should be the arduino.'''
         ports = list(serial.tools.list_ports.comports())
-        for p in ports:
-            print(p)
-            if "USB Serial Port" in p.description:
+        for port in ports:
+            print(port)
+            if "USB Serial Port" in port.description:
                 print("USB Serial Port")
-                port = p.device
+                port = port.device
                 break
 
         return port
 
     def getApps(slider):
-        with open("C:/Users/Zippy/Documents/GitHub/Volume-controller/OnPC/flaskapp/sliders.json") as file:
+        ''' Opens up the sliders.json file and returns the apps'''
+        with open("OnPC/flaskapp/sliders.json") as file:
             file = json.load(file)
             print(slider)
             print(file[0])
@@ -62,15 +63,17 @@ try:
         
         return apps
 
-    def open_action(icon, item):
-        ui_exe_path = "C:/Windows/HelpPane.exe"
-        subprocess.Popen(ui_exe_path)
+    def open_app(icon, item):
+        '''Opens the app when the icon is clicked on the taskbar'''
+        subprocess.Popen(["python", "C:/Users/Zippy/Documents/GitHub/Volume-controller/OnPC/flaskapp/flaskUI.py"])
 
     def quit_action(icon, item):
+        '''quits all code'''
         event.set()
         icon.stop()
+        exit()
     
-    def asd(num, in_min, in_max, out_min, out_max):
+    def asd(num, in_min, in_max, out_min, out_max): # maps a number from one range to another
         return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
     event = Event()
@@ -79,8 +82,8 @@ try:
 
     icon = pystray.Icon(name='Volume Controller', icon=image, title='Volume controller')
 
-    menu = (
-        pystray.MenuItem('Open', open_action),
+    menu = ( # creates a menu when the icon is right clicked
+        pystray.MenuItem('Open', open_app),
         pystray.MenuItem('Quit', quit_action),
     )
 
@@ -90,10 +93,11 @@ try:
     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
     master_volume = cast(interface, POINTER(IAudioEndpointVolume))
 
-    # print(ser.readline().decode('utf-8').strip())
     def read_serial_data(event: Event):
+        '''Reads the data coming from the arduino'''
         pythoncom.CoInitialize()
         nob1_pre = int(ser.readline().decode('utf-8', 'ignore').strip().split(',')[0])
+        # These adds a buffer of 1% so the computor doest get overloaded by volume changes
         nob1 = nob1_pre
         nob2_pre = int(ser.readline().decode('utf-8', 'ignore').strip().split(',')[1])
         nob2 = nob2_pre
@@ -142,17 +146,17 @@ try:
             nob3 = int(ser.readline().decode('utf-8', 'ignore').strip().split(',')[2])
             nob4 = int(ser.readline().decode('utf-8', 'ignore').strip().split(',')[3])
             nob5 = int(ser.readline().decode('utf-8', 'ignore').strip().split(',')[4])
-
+            # Reads the serial input
             print(ser.readline().decode('utf-8', 'ignore').strip().split(','))
 
             
 
-    # Start the thread
+    # Start the thread so the icon in the taskbar tray can run in parilal.
     threading.Thread(target=read_serial_data, args=(event,)).start()
 
 
     icon.menu = pystray.Menu(*menu)
-    icon.on_click = open_action
+    icon.on_click = open_app
     icon.run()
 
 except Exception as e:

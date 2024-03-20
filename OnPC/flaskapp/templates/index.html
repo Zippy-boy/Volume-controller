@@ -16,14 +16,16 @@
     <div class="sliderDraw">
         <div class="sliderContainer">
             <div class="slider">
-                <!-- <label for="default-range" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Default range</label> -->
+                
                 <input id="default-range" type="range" value="0" 
                 class="1 sliderCon h-half bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90"
                 oninput="changeVolume(this.value, this.className)">
+                <!-- Creats an slider the call changeVolume when the value is changed  -->
             </div>
             <div class="appBox" ondragover="allowDrop(event)" ondrop="drop(event)">
-                {% if preLoadedApps %}
-                    {% for app in preLoadedApps[0]["apps"] %}
+                <!-- Each slider has a box for the user to drag and drop the apps into -->
+                {% if preLoadedApps %} <!-- if there are apps for that slider show them-->
+                    {% for app in preLoadedApps[0]["apps"] %} 
                         <div class="app" draggable="true" ondragstart="drag(event)">
                             {{app}}
                         </div>
@@ -33,8 +35,6 @@
         </div>
         <div class="sliderContainer">
             <div class="slider">
-                <!-- <label for="default-range" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Default
-                    range</label> -->
                 <input id="default-range" type="range" value="0"
                     class="2 sliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90"
                     oninput="changeVolume(this.value, this.className)">
@@ -51,8 +51,6 @@
         </div>
         <div class="sliderContainer">
             <div class="slider">
-                <!-- <label for="default-range" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Default
-                    range</label> -->
                 <input id="default-range" type="range" value="0"
                     class="3 sliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90"
                     oninput="changeVolume(this.value, this.className)">
@@ -69,8 +67,6 @@
         </div>
         <div class="sliderContainer">
             <div class="slider">
-                <!-- <label for="default-range" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Default
-                    range</label> -->
                 <input id="default-range" type="range" value="0"
                     class="4 sliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90"
                     oninput="changeVolume(this.value, this.className)">
@@ -86,9 +82,11 @@
             </div>
         </div>
     </div>
-    <div class="appDraw">
+    <div class="appDraw"> 
+        <!-- This is a draw of apps for the apps that are not connected to a slider -->
         {% for app in apps %}
             {% if app not in preLoadedApps[0]["apps"] and app not in preLoadedApps[1]["apps"] and app not in preLoadedApps[2]["apps"] and app not in preLoadedApps[3]["apps"] %}
+                <!-- If the apps are not in any of the sliders, then show them -->
                 <div class="app" draggable="true" ondragstart="drag(event)">
                     {{app}}
                 </div>
@@ -97,11 +95,13 @@
     </div>
     <div class="mainSlider">
         <div class="slider mainslidy">
+            <!-- This is the slider for the main volume -->
             <input id="default-range" type="range" value="0"
                 class="mainSliderCon h-full bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 transform rotate-90" 
                 oninput="changeMasterVolume(this.value)">
         </div>
         <button class="app hello" onclick="calibrate()">CALIBRATE</button>
+        <!-- Calibrate button -->
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -114,7 +114,8 @@
             return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
         }
 
-        function changeMasterVolume(volume) {
+        function changeMasterVolume(volume) { 
+            // Sends a changeMasterVolume request to the API
             volume = asd(volume, 100, 0, 0, 100);
             console.log(volume);
             $.ajax({
@@ -132,6 +133,7 @@
         }
 
         function calibrate() {
+            // Sends the calibrate api request
             $.ajax({
                 url: '/calibrate',
                 type: 'POST',
@@ -146,12 +148,10 @@
         }
 
         function changeVolume(volume, slider) {
-            
+        
                 slider = slider.split(' ')[0];
                 volume = asd(volume, 100, 0, 0, 1);
                 
-                // console.log(volume, slider);
-
                 $.ajax({
                     url: '/change_volume',
                     type: 'POST',
@@ -175,21 +175,16 @@
         document.addEventListener("dragstart", function (event) {
             // Only allow elements with the class 'app' to be dragged
             if (event.target.className == "app") {
-                // store a ref. on the dragged elem
                 dragged = event.target;
-                // make it half transparent
                 event.target.style.opacity = .5;
             }
         }, false);
 
-        /* events fired on the drop targets */
         document.addEventListener("dragover", function (event) {
-            // prevent default to allow drop
             event.preventDefault();
         }, false);
 
         document.addEventListener("dragenter", function (event) {
-            // highlight potential drop target when the draggable element enters it
             if (event.target.className == "appBox" || event.target.className == "appDraw") {
                 event.target.style.background = "#171721";
             }
@@ -197,7 +192,6 @@
         }, false);
 
         document.addEventListener("dragleave", function (event) {
-            // reset background of potential drop target when the draggable element leaves it
             if (event.target.className == "appBox" || event.target.className == "appDraw") {
                 event.target.style.background = "";
             }
@@ -205,9 +199,8 @@
         }, false);
 
         document.addEventListener("drop", function (event) {
-            // prevent default action (open as link for some elements)
             event.preventDefault();
-            // move dragged elem to the selected drop target
+            // what happens when the app is droped into a container
             if ((event.target.className == "appBox" || event.target.className == "appDraw") && dragged) {
                 event.target.style.background = "";
                 dragged.parentNode.removeChild(dragged);
@@ -221,12 +214,12 @@
             var appBoxContents = Array.from(appBoxes).map((box, index) => {
                 var apps = Array.from(box.getElementsByClassName('app')).map(app => app.innerHTML);
                 console.log({
-                    slider: index + 1, // Slider number (1-4)
+                    slider: index + 1, 
                     apps: apps
                 
                 })
                 return {
-                    slider: index + 1, // Slider number (1-4)
+                    slider: index + 1, 
                     apps: apps
                 };
             });

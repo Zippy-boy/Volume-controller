@@ -1,1 +1,1 @@
-"[{\"slider\": 1, \"apps\": []}, {\"slider\": 2, \"apps\": []}, {\"slider\": 3, \"apps\": []}, {\"slider\": 4, \"apps\": []}]"
+[{"slider": 1, "apps": []}, {"slider": 2, "apps": ["Spotify.exe"]}, {"slider": 3, "apps": ["msedge.exe", "RtkAudUService64.exe"]}, {"slider": 4, "apps": []}]
